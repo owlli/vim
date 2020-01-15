@@ -39,8 +39,12 @@ set cuc
 "set list
 "tab显示为>~,空格显示为.,其他替换方法:help listchars
 "set listchars=tab:>~,space:.
-"整词换行
+"整词换行显示
 "set linebreak
+"带有如下符号的单词不要被换行分割
+"set iskeyword+=_,$,@,%,#,-
+"强制显示侧边栏(行号左边的一栏,默认为auto,会根据一些插件的显示情况来显示)
+"set signcolumn=yes
 
 "设置ctags文件位置
 "set tags=/home/lzh/Desktop/s5p6818_study/Linux/src/llinux-3.4/tags
@@ -221,6 +225,8 @@ Plugin 'VundleVim/Vundle.vim'
 
 "Nerdtree	显示文件树
 Plugin 'scrooloose/nerdtree'
+"nerdtree-git-plugin	nerdtree可以显示git仓库状态插件
+Plugin 'Xuyuanp/nerdtree-git-plugin'
 "Tagbar	显示文件中的宏,函数,变量等
 Plugin 'majutsushi/tagbar'
 "auto-pairs	自动匹配括号
@@ -241,7 +247,7 @@ Plugin 'Valloric/YouCompleteMe'
 "vim-airline	漂亮的状态栏
 Bundle 'bling/vim-airline'
 "echofunc	自动显示函数原型
-Plugin 'mbbill/echofunc'
+"Plugin 'mbbill/echofunc'
 "taglist测试
 "Bundle 'taglist.vim'
 "LeaderF	模糊查找
@@ -278,19 +284,22 @@ Plugin 'easymotion/vim-easymotion'
 "Changes plugin
 "显示文件哪些内容被修改,用不上,而且不好用,显示被改的地方在实际地方的上方
 "Plugin 'chrisbra/changesPlugin'
+"vim-cpp-enhanced-highlight		更好的c/c++语法高亮
+Plugin 'octol/vim-cpp-enhanced-highlight'
+"echodoc	自动显示函数原型,函数原型来自ycm,比echofunc好用
+Plugin 'Shougo/echodoc.vim'
+
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
 
 
-
-
 " Nerdtree
 "显示在左边,默认
 "let NERDTreeWinPos='left'
 "设置宽度
-let NERDTreeWinSize=30
+let NERDTreeWinSize=20
 "按f2打开隐藏
 map <F2> :NERDTreeToggle<CR>
 " 打开文件时关闭树
@@ -300,10 +309,26 @@ let NERDTreeShowBookmarks=1
 autocmd StdinReadPre * let s:std_in=1
 "当打开vim且没有文件时自动打开NERDTree
 autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-let NERDTreeWinSize=20
+"显示行号
 "let NERDTreeShowLineNumbers=1
 let NERDTreeAutoCenter=1
+"显示隐藏文件
 let NERDTreeShowHidden=1
+"忽略部分文件
+let NERDTreeIgnore=['\.pyc','\~$','\.swp']
+"nerdtree-git-plugin
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+	\ 'Ignored'   : "☒",
+    \ "Unknown"   : "?"
+    \ }
 
 " Tagbar
 nmap <silent> <F4> :TagbarToggle<CR>
@@ -362,8 +387,8 @@ let g:ycm_show_diagnostics_ui = 0
 let g:ycm_server_python_interpreter='/usr/bin/python'
 let g:ycm_global_ycm_extra_conf='~/.vim/.ycm_extra_conf.py'
 "在选择列表中选第一个和最后一个的快捷键默认为tab和shift tab,或者为<C-n>和<C-p>,可以把它们映射成down和up
-let g:ycm_key_list_select_completion = ['<Down>']
-let g:ycm_key_list_previous_completion = ['<Up>']
+"let g:ycm_key_list_select_completion = ['<Down>']
+"let g:ycm_key_list_previous_completion = ['<Up>']
 "关闭加载.ycm_extra_conf.py提示
 let g:ycm_confirm_extra_conf=0 
 "从第2个键入字符就开始罗列匹配项,关闭时默认就是2
@@ -378,8 +403,15 @@ let g:ycm_complete_in_strings = 1
 let g:ycm_collect_identifiers_from_comments_and_strings = 0
 "ycm函数补全是基于buffer的,如果buffer中没有这个函数,就不会自动补全,如果要开启基于语义的补全,开启下面选项
 let g:ycm_key_invoke_completion = '<c-z>'
+"输入第二个字符后就开始显示语义补全框
+let g:ycm_min_num_identifier_candidate_chars = 2
+"自动触发语义补全
+let g:ycm_semantic_triggers =  {
+			\ 'c,cpp,python,java,go,erlang,perl': ['re!\w{2}'],
+			\ 'cs,lua,javascript': ['re!\w{2}'],
+			\ }
 "语义补全函数,使用上下键选择时,不会自动弹出预览窗口
-"set completeopt=menu,menuone
+set completeopt=menu,menuone
 let g:ycm_add_preview_to_completeopt = 0
 "开启基于tag的补全,可以在这之后添加需要的标签路径,注意,ctags必须是Exuberant Ctags,且生产tags文件时需要加--fields=+l,如果为纯c项目,还需要加--langmap=c:.c.h选项
 "let g:ycm_collect_identifiers_from_tags_files = 1
@@ -486,6 +518,10 @@ let g:asyncrun_bell = 1
 \   'go': ['golint'],
 \}
 let g:ale_sign_column_always = 1
+let g:ale_linters_explicit = 1
+let g:ale_completion_delay = 500
+let g:ale_echo_delay = 20
+let g:ale_lint_delay = 500
 "错误标志
 let g:ale_sign_error = '✗'
 "警告标志
@@ -497,7 +533,9 @@ let g:ale_echo_msg_format = '%severity%:[%linter%] %code: %%s'
 "下面是和severity相关的显示,使用默认即可
 "let g:ale_echo_msg_error_str = 'E'
 "let g:ale_echo_msg_warning_str = 'W'
+"代表vim在normal模式下文本改变运行linter
 let g:ale_lint_on_text_changed = 'normal'
+"代表离开insert模式运行linter
 let g:ale_lint_on_insert_leave = 1
 "是否在airline中显示ale的警告和错误,默认显示
 "let g:airline#extensions#ale#enabled = 1
@@ -581,7 +619,11 @@ map <Leader><leader>l <Plug>(easymotion-lineforward)
 "重复上一次动作
 map <Leader><leader>. <Plug>(easymotion-repeat)
 
-
+"echodoc
+"必须不在左下角显示模式,否则insert会覆盖函数原型
+set noshowmode
+"默认启用
+let g:echodoc#enable_at_startup = 1
 
 
 

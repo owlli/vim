@@ -1318,9 +1318,16 @@ https://github.com/chrisbra/changesPlugin
 
 不好用,和ALE,Signify有冲突,关了
 
+### vim-cpp-enhanced-highlight
 
+https://github.com/octol/vim-cpp-enhanced-highlight
 
+更好的c/c++语法高亮
 
+### echodoc
 
+https://github.com/Shougo/echodoc.vim
 
+在showmode行自动显示函数原型,函数原型来自ycm,比echofunc好用
 
+**注意,必须使用ycm的语义补全,且必须在补全框中选中函数按(号才会出现函数原型,全部自己手动敲的函数名不会出现函数原型**
