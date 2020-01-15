@@ -314,6 +314,8 @@ autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
 let NERDTreeAutoCenter=1
 "显示隐藏文件
 let NERDTreeShowHidden=1
+"删除文件时删除对应的buffer
+let NERDTreeAutoDeleteBuffer=1
 "忽略部分文件
 let NERDTreeIgnore=['\.pyc','\~$','\.swp']
 "nerdtree-git-plugin
