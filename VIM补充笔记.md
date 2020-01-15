@@ -930,6 +930,31 @@ vim +PluginInstall +qall
 
 见我的vimrc文件
 
+### nerdtree-git-plugin
+
+https://github.com/Xuyuanp/nerdtree-git-plugin
+
+nerdtree可以显示git仓库状态插件
+
+建议状态用下面图标显示
+
+```shell
+let g:NERDTreeIndicatorMapCustom = { 
+    \ "Modified"  : "✹",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✗",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : "☒",
+    \ "Unknown"   : "?" 
+    \ }
+```
+
+
+
 ### Tagbar
 
 见我的vimrc文件
